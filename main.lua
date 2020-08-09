@@ -1,8 +1,12 @@
 require('src.Map')
-require('src.Util')
+require('src.util.Util')
+require('src.util.Color')
+require('src.util.CreateCollisionClasses')
+
 local wf = require 'libs.windfield'
 
 WORLD = wf.newWorld(0, 512, true)
+createCollisionClasses()
 
 local map
 

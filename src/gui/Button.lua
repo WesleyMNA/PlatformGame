@@ -1,14 +1,15 @@
 Button = {}
 Button.__index = Button
 
-function Button:new(x, y)
+function Button:new(x, y, sprite)
     local this = {
         class = 'Button',
 
+        sprite = sprite,
         x = x,
         y = y,
-        width = 50,
-        height = 50
+        width = sprite:getWidth(),
+        height = sprite:getHeight()
     }
 
     setmetatable(this, self)
@@ -16,8 +17,8 @@ function Button:new(x, y)
 end
 
 function Button:render()
-    love.graphics.setColor(RED)
-    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+    love.graphics.setColor(WHITE)
+    love.graphics.draw(self.sprite, self.x, self.y)
 end
 
 function Button:isClicked()

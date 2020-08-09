@@ -1,4 +1,5 @@
 require('src.Animation')
+require('src.player.Bullet')
 
 Player = {}
 Player.__index = Player
@@ -12,9 +13,10 @@ function Player:new(map, x, y)
         spritesheets = {},
         quads = {},
         animations = {},
+        bullets = {},
 
         state = 'walk',
-        collider = WORLD:newCircleCollider(x, y, 30),
+        collider = WORLD:newCircleCollider(x, y, 25),
         width = 64,
         height = 64,
         speed = 300,
@@ -27,9 +29,14 @@ function Player:new(map, x, y)
         scale = {
             x = 1,
             y = 1
-        }
+        },
+
+        shootSpeed = 0.5
     }
 
+    this.collider:setCollisionClass('Player')
+
+    -- WALK
     this.spritesheets.walk = love.graphics.newImage('sprites/player/walk.png')
     local walkingData = {
         fps = 10,
@@ -44,6 +51,7 @@ function Player:new(map, x, y)
     )
     this.animations.walk = Animation:new(this.quads.walk, walkingData)
 
+    -- JUMP
     this.spritesheets.jump = love.graphics.newImage('sprites/player/jump.png')
     local jumpingData = {
         fps = 10,
@@ -63,6 +71,8 @@ function Player:new(map, x, y)
 end
 
 function Player:update(dt)
+    updateLoop(dt, self.bullets)
+
     if self:isTouchingTheFloor() then
         self.state = 'walk'
         self:move()
@@ -72,23 +82,42 @@ function Player:update(dt)
         self.state = 'jump'
         self.animations[self.state]:update(dt)
     elseif self:isMoving() then
-        self.state = 'walk'
         self.animations[self.state]:update(dt)
     else
         self.animations[self.state]:reset()
     end
 
     self:resetDirection()
+    self:resetShoot(dt)
 end
 
 function Player:render()
+    renderLoop(self.bullets)
     love.graphics.setColor(WHITE)
     love.graphics.draw(
         self.spritesheets[self.state], self.quads[self.state],
         self:getX(), self:getY(), 0,
-        self.scale.x, self.scale.y,
+        self:getScaleX(), self:getScaleY(),
         32, 32
     )
+end
+
+function Player:attack()
+    if self.shootSpeed >= 0.5 then
+        self.shootSpeed = 0
+        local bullet = Bullet:new(self:getX(), self:getY(), self)
+        table.insert(self.bullets, bullet)
+    end
+end
+
+function Player:resetShoot(dt)
+    self.shootSpeed = self.shootSpeed + dt
+end
+
+function Player:destroyBullet(bullet)
+    local index = table.indexOf(self.bullets, bullet)
+    table.remove(self.bullets, index)
+    bullet.collider:destroy()
 end
 
 function Player:move()
@@ -108,12 +137,24 @@ function Player:isTouchingTheFloor()
     return self.collider:isTouching(self.map.floor.body)
 end
 
+function Player:getPosition()
+    return self.collider:getX(), self.collider:getY()
+end
+
 function Player:getX()
     return self.collider:getX()
 end
 
 function Player:getY()
     return self.collider:getY()
+end
+
+function Player:getScaleX()
+    return self.scale.x
+end
+
+function Player:getScaleY()
+    return self.scale.y
 end
 
 function Player:resetDirection()

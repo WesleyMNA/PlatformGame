@@ -1,10 +1,10 @@
-require('src.Button')
-require('src.Player')
+require('src.gui.Button')
 
 local function keyPressed()
     local bool = love.keyboard.isDown('a') or
         love.keyboard.isDown('d') or
-        love.keyboard.isDown('space')
+        love.keyboard.isDown('space') or
+        love.keyboard.isDown('m')
     return bool
 end
 
@@ -20,9 +20,11 @@ function Controller:new(map, player)
     }
 
     local buttonY = WINDOW_HEIGHT - 100
+    local leftSprite = love.graphics.newImage('sprites/gui/left-arrow.png')
+    local rightSprite = love.graphics.newImage('sprites/gui/right-arrow.png')
     this.moveButtons = {
-        left = Button:new(10, buttonY),
-        right = Button:new(100, buttonY)
+        left = Button:new(10, buttonY, leftSprite),
+        right = Button:new(100, buttonY, rightSprite)
     }
     this.moveButtons.left.update = function (dt)
         if this.moveButtons.left:isClicked() or love.keyboard.isDown('a') then
@@ -36,14 +38,15 @@ function Controller:new(map, player)
         end
     end
 
-
+    local attackSprite = love.graphics.newImage('sprites/gui/attack.png')
+    local jumpSprite = love.graphics.newImage('sprites/gui/jump.png')
     this.actionButtons = {
-        attack = Button:new(WINDOW_WIDTH-60, buttonY-20),
-        jump = Button:new(WINDOW_WIDTH-150, buttonY+20)
+        attack = Button:new(WINDOW_WIDTH-60, buttonY-10, attackSprite),
+        jump = Button:new(WINDOW_WIDTH-150, buttonY+20, jumpSprite)
     }
     this.actionButtons.attack.update = function (dt)
-        if this.actionButtons.attack:isClicked() then
-            return
+        if this.actionButtons.attack:isClicked() or love.keyboard.isDown('m') then
+            this.player:attack()
         end
     end
 

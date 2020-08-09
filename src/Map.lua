@@ -1,8 +1,8 @@
-require('src.Controller')
+require('src.player.Player')
+require('src.gui.Controller')
 
 Map = {}
 Map.__index = Map
-
 
 function Map:new()
     local this = {
@@ -12,8 +12,15 @@ function Map:new()
     this.player = Player:new(this, 100, 100)
     this.controller = Controller:new(this, this.player)
 
-    this.floor = WORLD:newRectangleCollider(0, WINDOW_HEIGHT-100, WINDOW_WIDTH, 100)
+    local h = 120
+    this.floor = WORLD:newRectangleCollider(0, WINDOW_HEIGHT-h, WINDOW_WIDTH, h)
     this.floor:setType('static')
+
+    this.wall = WORLD:newLineCollider(0,0, 0, WINDOW_HEIGHT)
+    this.wall:setType('static')
+
+    this.wall2 = WORLD:newLineCollider(WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
+    this.wall2:setType('static')
 
     setmetatable(this, self)
     return this
