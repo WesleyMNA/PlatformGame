@@ -7,9 +7,11 @@ function Bullet:new(x, y, player)
 
         map = player.map,
         player = player,
+        startX = x,
 
         state = 'move',
-        speed = 500
+        speed = 600,
+        range = 700
     }
 
     this.directionX = player:getScaleX() * this.speed
@@ -30,7 +32,7 @@ function Bullet:update(dt)
 end
 
 function Bullet:render()
-    love.graphics.setColor(ORANGE)
+    love.graphics.setColor(BLACK)
     love.graphics.circle('fill', self:getX(), self:getY(), 2)
 end
 
@@ -41,7 +43,7 @@ function Bullet:move()
 end
 
 function Bullet:collide()
-    if self:isColliding() or self:isOutOfCamera() then
+    if self:isColliding() or self:isOutOfRange() then
         self.player:destroyBullet(self)
     end
 end
@@ -54,8 +56,11 @@ function Bullet:isColliding()
     return self.collider:isTouching(self.map.floor.body)
 end
 
-function Bullet:isOutOfCamera()
-    if self:getX() < 0 or self:getX() > WINDOW_WIDTH then
+function Bullet:isOutOfRange()
+    local distance = self:getX() - self.startX
+    if self:getX() < 0 or
+    distance >= self.range or
+    distance <= -self.range then
         return true
     end
     return false

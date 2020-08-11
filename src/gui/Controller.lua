@@ -1,13 +1,5 @@
 require('src.gui.Button')
 
-local function keyPressed()
-    local bool = love.keyboard.isDown('a') or
-        love.keyboard.isDown('d') or
-        love.keyboard.isDown('space') or
-        love.keyboard.isDown('m')
-    return bool
-end
-
 Controller = {}
 Controller.__index = Controller
 
@@ -61,7 +53,7 @@ function Controller:new(map, player)
 end
 
 function Controller:update(dt)
-    if self:screenTouched() or keyPressed() then
+    if self:screenTouched() or self:keyPressed() then
         updateLoop(dt, self.moveButtons)
         updateLoop(dt, self.actionButtons)
     end
@@ -75,4 +67,12 @@ end
 function Controller:screenTouched()
     if #love.touch.getTouches() == 0 then return false end
     return true
+end
+
+function Controller:keyPressed()
+    local bool = love.keyboard.isDown('a') or
+        love.keyboard.isDown('d') or
+        love.keyboard.isDown('space') or
+        love.keyboard.isDown('m')
+    return bool
 end

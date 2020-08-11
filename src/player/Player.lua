@@ -54,8 +54,8 @@ function Player:new(map, x, y)
     -- JUMP
     this.spritesheets.jump = love.graphics.newImage('sprites/player/jump.png')
     local jumpingData = {
-        fps = 10,
-        frames = 3,
+        fps = 1,
+        frames = 1,
         xoffsetMul = this.width,
         yoffset = 0,
         loop = false
@@ -82,6 +82,7 @@ function Player:update(dt)
         self.state = 'jump'
         self.animations[self.state]:update(dt)
     elseif self:isMoving() then
+        self.state = 'walk'
         self.animations[self.state]:update(dt)
     else
         self.animations[self.state]:reset()
@@ -103,6 +104,8 @@ function Player:render()
 end
 
 function Player:attack()
+    if self:isJumping() then return end
+
     if self.shootSpeed >= 0.5 then
         self.shootSpeed = 0
         local bullet = Bullet:new(self:getX(), self:getY(), self)

@@ -25,8 +25,7 @@ function Animation:update(dt)
         self.timer = 1 / self.fps
         self.frame = self.frame + 1
         if self.frame >= self.frames then
-            if self:hasLoop() then self.frame = 0
-            else return end
+            self.frame = 0
         end
         self.xoffset = self.xoffsetMul * self.frame
         self.quad:setViewport(self.xoffset, self.yoffset, self.xoffsetMul, self.xoffsetMul)
