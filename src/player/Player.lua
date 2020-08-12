@@ -16,9 +16,7 @@ function Player:new(map, x, y)
         bullets = {},
 
         state = 'walk',
-        collider = WORLD:newCircleCollider(x, y, 25),
-        width = 64,
-        height = 64,
+        collider = WORLD:newCircleCollider(x, y, 16),
         speed = 300,
 
         direction = {
@@ -38,6 +36,9 @@ function Player:new(map, x, y)
 
     -- WALK
     this.spritesheets.walk = love.graphics.newImage('sprites/player/walk.png')
+    this.width = this.spritesheets.walk:getHeight()
+    this.height = this.width
+
     local walkingData = {
         fps = 10,
         frames = 3,
@@ -99,7 +100,7 @@ function Player:render()
         self.spritesheets[self.state], self.quads[self.state],
         self:getX(), self:getY(), 0,
         self:getScaleX(), self:getScaleY(),
-        32, 32
+        self.width/2, self.height/2
     )
 end
 

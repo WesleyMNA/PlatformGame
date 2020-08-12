@@ -32,7 +32,7 @@ end
 function love.draw()
     Camera:set()
     map:render()
-    WORLD:draw()
+    -- WORLD:draw()
     Camera:unset()
     controller:render()
 end

@@ -29,5 +29,6 @@ end
 
 function Map:render()
     love.graphics.draw(self.sprite, 0, 0)
+    love.graphics.setBackgroundColor(RED)
     self.player:render()
 end
