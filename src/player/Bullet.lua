@@ -9,18 +9,31 @@ function Bullet:new(x, y, player)
         player = player,
         startX = x,
 
+        sprite = love.graphics.newImage('assets/sprites/player/bullet.png'),
         state = 'move',
         speed = 600,
-        range = 700
+        range = 700,
+
+        scale = {
+            x = player:getScaleX(),
+            y = 1
+        },
     }
 
-    this.directionX = player:getScaleX() * this.speed
-    this.directionY = 0
+    this.direction = {
+        x = player:getScaleX() * this.speed,
+        y = 0
+    }
 
+    this.width = this.sprite:getWidth()
+    this.height = this.sprite:getHeight()
+
+    x = x + 5 * this.scale.x
+    y = y - 1
     this.collider = WORLD:newCircleCollider(x, y, 2)
     this.collider:setGravityScale(0)
     this.collider:setCollisionClass('Bullet')
-    this.collider:setMask(1)
+    -- this.collider:setMask(1)
 
     setmetatable(this, self)
     return this
@@ -32,13 +45,17 @@ function Bullet:update(dt)
 end
 
 function Bullet:render()
-    love.graphics.setColor(BLACK)
-    love.graphics.circle('fill', self:getX(), self:getY(), 2)
+    love.graphics.setColor(WHITE)
+    love.graphics.draw(
+        self.sprite, self:getX(), self:getY(), 0,
+        self.scale.x, self.scale.y,
+        self.width/2, self.height/2
+    )
 end
 
 function Bullet:move()
     if self:isInMap() then
-        self.collider:setLinearVelocity(self.directionX, self.directionY)
+        self.collider:setLinearVelocity(self.direction.x, self.direction.y)
     end
 end
 
@@ -53,7 +70,13 @@ function Bullet:isInMap()
 end
 
 function Bullet:isColliding()
-    return self.collider:isTouching(self.map.floor.body)
+    if self:isHittingTheFloor() then return true end
+
+    if self:isHittingEnemy() then return true end
+
+    if self:isHittingLimitWall() then return true end
+
+    return false
 end
 
 function Bullet:isOutOfRange()
@@ -62,6 +85,21 @@ function Bullet:isOutOfRange()
     distance >= self.range or
     distance <= -self.range then
         return true
+    end
+    return false
+end
+
+function Bullet:isHittingEnemy()
+    return self.collider:enter('Enemy')
+end
+
+function Bullet:isHittingLimitWall()
+    return self.collider:enter('LimitWall')
+end
+
+function Bullet:isHittingTheFloor()
+    for _, floor in pairs(self.map.floors) do
+        if self.collider:isTouching(floor.body) then return true end
     end
     return false
 end

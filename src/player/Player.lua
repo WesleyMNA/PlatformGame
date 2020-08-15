@@ -18,6 +18,7 @@ function Player:new(map, x, y)
         state = 'walk',
         collider = WORLD:newCircleCollider(x, y, 16),
         speed = 300,
+        jumpHeight = 200,
 
         direction = {
             x = 0,
@@ -33,11 +34,12 @@ function Player:new(map, x, y)
     }
 
     this.collider:setCollisionClass('Player')
+    print(this.collider:getMask())
 
     -- WALK
-    this.spritesheets.walk = love.graphics.newImage('sprites/player/walk.png')
-    this.width = this.spritesheets.walk:getHeight()
-    this.height = this.width
+    this.spritesheets.walk = love.graphics.newImage('assets/sprites/player/walk.png')
+    this.height = this.spritesheets.walk:getHeight()
+    this.width = this.height
 
     local walkingData = {
         fps = 10,
@@ -53,7 +55,7 @@ function Player:new(map, x, y)
     this.animations.walk = Animation:new(this.quads.walk, walkingData)
 
     -- JUMP
-    this.spritesheets.jump = love.graphics.newImage('sprites/player/jump.png')
+    this.spritesheets.jump = love.graphics.newImage('assets/sprites/player/jump.png')
     local jumpingData = {
         fps = 1,
         frames = 1,
@@ -138,7 +140,10 @@ function Player:isJumping()
 end
 
 function Player:isTouchingTheFloor()
-    return self.collider:isTouching(self.map.floor.body)
+    for _, floor in pairs(self.map.floors) do
+        if self.collider:isTouching(floor.body) then return true end
+    end
+    return false
 end
 
 function Player:getPosition()
@@ -171,5 +176,5 @@ function Player:setDirectionX(x)
 end
 
 function Player:setDirectionY(y)
-    self.direction.y = y * self.speed
+    self.direction.y = y * self.jumpHeight
 end

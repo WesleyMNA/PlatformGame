@@ -12,8 +12,8 @@ function Controller:new(map, player)
     }
 
     local buttonY = WINDOW_HEIGHT - 100
-    local leftSprite = love.graphics.newImage('sprites/gui/left-arrow.png')
-    local rightSprite = love.graphics.newImage('sprites/gui/right-arrow.png')
+    local leftSprite = love.graphics.newImage('assets/sprites/gui/left-arrow.png')
+    local rightSprite = love.graphics.newImage('assets/sprites/gui/right-arrow.png')
     this.moveButtons = {
         left = Button:new(10, buttonY, leftSprite),
         right = Button:new(100, buttonY, rightSprite)
@@ -30,8 +30,8 @@ function Controller:new(map, player)
         end
     end
 
-    local attackSprite = love.graphics.newImage('sprites/gui/attack.png')
-    local jumpSprite = love.graphics.newImage('sprites/gui/jump.png')
+    local attackSprite = love.graphics.newImage('assets/sprites/gui/attack.png')
+    local jumpSprite = love.graphics.newImage('assets/sprites/gui/jump.png')
     this.actionButtons = {
         attack = Button:new(WINDOW_WIDTH-60, buttonY-10, attackSprite),
         jump = Button:new(WINDOW_WIDTH-150, buttonY+20, jumpSprite)

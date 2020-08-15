@@ -1,6 +1,8 @@
 WINDOW_WIDTH = love.graphics.getWidth()
 WINDOW_HEIGHT = love.graphics.getHeight()
 
+TILE_SIZE = 16
+
 function renderLoop(objectList)
     for i, object in pairs(objectList) do
         object:render()
@@ -21,16 +23,6 @@ function copy(obj, seen)
     s[obj] = res
     for k, v in pairs(obj) do res[copy(k, s)] = copy(v, s) end
     return res
-end
-
-function getDirection(ax, target)
-    if target - ax == 0 then
-        return 0
-    elseif target - ax < 0 then
-        return -1
-    else
-        return 1
-    end
 end
 
 function table.indexOf(t, object)
