@@ -46,13 +46,16 @@ function Map:createFloor(floorData)
     local w = TILE_SIZE * floorData.width
     local floor = WORLD:newRectangleCollider(x, y, w, 1)
     floor:setType('static')
+    floor:setCollisionClass('Floor')
     table.insert(self.floors, floor)
 
     local floorStartLimit = WORLD:newLineCollider(x, y, x, WINDOW_HEIGHT)
     floorStartLimit:setType('static')
+    floorStartLimit:setCollisionClass('LimitWall')
     x = x + w
     local floorEndLimit = WORLD:newLineCollider(x, y, x, WINDOW_HEIGHT)
     floorEndLimit:setType('static')
+    floorEndLimit:setCollisionClass('LimitWall')
 end
 
 function Map:createMapLimits(mapData)

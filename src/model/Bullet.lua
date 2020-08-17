@@ -1,39 +1,16 @@
 Bullet = {}
 Bullet.__index = Bullet
 
-function Bullet:new(x, y, player)
+function Bullet:extend(type)
     local this = {
-        class = 'Bullet',
+        class = type,
 
-        map = player.map,
-        player = player,
-        startX = x,
-
-        sprite = love.graphics.newImage('assets/sprites/player/bullet.png'),
         state = 'move',
         speed = 600,
-        range = 700,
-
-        scale = {
-            x = player:getScaleX(),
-            y = 1
-        },
+        range = 700
     }
 
-    this.direction = {
-        x = player:getScaleX() * this.speed,
-        y = 0
-    }
-
-    this.width = this.sprite:getWidth()
-    this.height = this.sprite:getHeight()
-
-    x = x + 5 * this.scale.x
-    y = y - 1
-    this.collider = WORLD:newCircleCollider(x, y, 2)
-    this.collider:setGravityScale(0)
-    this.collider:setCollisionClass('Bullet')
-    -- this.collider:setMask(1)
+    this.__index = this
 
     setmetatable(this, self)
     return this
@@ -59,24 +36,21 @@ function Bullet:move()
     end
 end
 
+function Bullet:createCollider(x, y)
+    x = x + 5 * self.scale.x
+    y = y - 1
+    self.collider = WORLD:newCircleCollider(x, y, 2)
+    self.collider:setGravityScale(0)
+end
+
 function Bullet:collide()
     if self:isColliding() or self:isOutOfRange() then
-        self.player:destroyBullet(self)
+        self.shooter:destroyBullet(self)
     end
 end
 
 function Bullet:isInMap()
     return self.collider.body
-end
-
-function Bullet:isColliding()
-    if self:isHittingTheFloor() then return true end
-
-    if self:isHittingEnemy() then return true end
-
-    if self:isHittingLimitWall() then return true end
-
-    return false
 end
 
 function Bullet:isOutOfRange()
@@ -89,19 +63,12 @@ function Bullet:isOutOfRange()
     return false
 end
 
-function Bullet:isHittingEnemy()
-    return self.collider:enter('Enemy')
-end
-
 function Bullet:isHittingLimitWall()
     return self.collider:enter('LimitWall')
 end
 
 function Bullet:isHittingTheFloor()
-    for _, floor in pairs(self.map.floors) do
-        if self.collider:isTouching(floor.body) then return true end
-    end
-    return false
+    return self.collider:enter('Floor')
 end
 
 function Bullet:getX()
@@ -111,3 +78,26 @@ end
 function Bullet:getY()
     return self.collider:getY()
 end
+
+function Bullet:setShooter(shooter)
+    self.shooter = shooter
+    self.scale = {
+        x = self.shooter:getScaleX(),
+        y = 1
+    }
+    self.direction = {
+        x = self.scale.x * self.speed,
+        y = 0
+    }
+end
+
+function Bullet:setStartX(x)
+    self.startX = x
+end
+
+function Bullet:setSprite(sprite)
+    self.sprite = sprite
+    self.width = sprite:getWidth()
+    self.height = sprite:getHeight()
+end
+

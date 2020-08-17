@@ -1,38 +1,53 @@
 Base = {}
 Base.__index = Base
 
-function Base:new(x, y)
+function Base:extend(type)
     local this = {
-        class = 'Base',
+        class = type,
 
-        sprite = love.graphics.newImage('assets/sprites/enemies/base.png'),
-        collider = WORLD:newCircleCollider(x, y, 16),
+        direction = {
+            x = 0,
+            y = 0
+        },
 
-        bullets = {}
+        scale = {
+            x = 1,
+            y = 1
+        }
     }
 
-    this.collider:setMass(10000000000)
-    this.collider:setCollisionClass('Enemy')
-
-    this.width = this.sprite:getWidth()
-    this.height = this.sprite:getHeight()
+    this.__index = this
 
     setmetatable(this, self)
     return this
 end
 
 function Base:update(dt)
+    if self.bullets then updateLoop(dt, self.bullets) end
+
+    if self:isShooter() then
+        self:attack()
+        self:resetShoot(dt)
+    end
     self:collide()
 end
 
 function Base:render()
-    -- renderLoop(self.bullets)
+    if self.bullets then renderLoop(self.bullets) end
+
     love.graphics.setColor(WHITE)
     love.graphics.draw(
         self.sprite,
-        self:getX(), self:getY(), 0, 1, 1,
+        self:getX(), self:getY(), 0,
+        self:getScaleX(), self:getScaleY(),
         self.width/2, self.height/2
     )
+end
+
+function Base:createCollider(x, y)
+    self.collider = WORLD:newCircleCollider(x, y, 16)
+    self.collider:setMass(10000000000)
+    self.collider:setCollisionClass('Enemy')
 end
 
 function Base:collide()
@@ -41,8 +56,20 @@ function Base:collide()
     end
 end
 
+function Base:isShooter()
+    return self.class == 'Shooter'
+end
+
 function Base:isShot()
     return self.collider:enter('Bullet')
+end
+
+function Base:getScaleX()
+    return self.scale.x
+end
+
+function Base:getScaleY()
+    return self.scale.y
 end
 
 function Base:getX()
@@ -51,4 +78,10 @@ end
 
 function Base:getY()
     return self.collider:getY()
+end
+
+function Base:setSprite(sprite)
+    self.sprite = sprite
+    self.width = sprite:getWidth()
+    self.height = sprite:getHeight()
 end

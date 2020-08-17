@@ -1,5 +1,5 @@
 require('src.Animation')
-require('src.player.Bullet')
+require('src.player.PlayerBullet')
 
 Player = {}
 Player.__index = Player
@@ -19,6 +19,7 @@ function Player:new(map, x, y)
         collider = WORLD:newCircleCollider(x, y, 16),
         speed = 300,
         jumpHeight = 200,
+        shootSpeed = 0.5,
 
         direction = {
             x = 0,
@@ -28,9 +29,7 @@ function Player:new(map, x, y)
         scale = {
             x = 1,
             y = 1
-        },
-
-        shootSpeed = 0.5
+        }
     }
 
     this.collider:setCollisionClass('Player')
@@ -111,7 +110,7 @@ function Player:attack()
 
     if self.shootSpeed >= 0.5 then
         self.shootSpeed = 0
-        local bullet = Bullet:new(self:getX(), self:getY(), self)
+        local bullet = PlayerBullet:new(self:getX(), self:getY(), self)
         table.insert(self.bullets, bullet)
     end
 end

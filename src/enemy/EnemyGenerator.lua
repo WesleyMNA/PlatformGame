@@ -1,4 +1,4 @@
-require('src.enemy.Base')
+require('src.enemy.Shooter')
 
 EnemyGenerator = {}
 EnemyGenerator.__index = EnemyGenerator
@@ -20,7 +20,7 @@ end
 function EnemyGenerator:update(dt)
     for _, enemy in pairs(self.enemyData) do
         if self.player:getX() >= enemy.playerX and not enemy.created then
-            local base = Base:new(enemy.x, enemy.y)
+            local base = Shooter:new(enemy.x, enemy.y)
             enemy.created = true
             self:addEnemy(base)
         end
