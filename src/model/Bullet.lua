@@ -17,8 +17,8 @@ function Bullet:extend(type)
 end
 
 function Bullet:update(dt)
-    self:collide()
     self:move()
+    self:collide()
 end
 
 function Bullet:render()
@@ -31,9 +31,7 @@ function Bullet:render()
 end
 
 function Bullet:move()
-    if self:isInMap() then
-        self.collider:setLinearVelocity(self.direction.x, self.direction.y)
-    end
+    self.collider:setLinearVelocity(self.direction.x, self.direction.y)
 end
 
 function Bullet:createCollider(x, y)
@@ -47,10 +45,6 @@ function Bullet:collide()
     if self:isColliding() or self:isOutOfRange() then
         self.shooter:destroyBullet(self)
     end
-end
-
-function Bullet:isInMap()
-    return self.collider.body
 end
 
 function Bullet:isOutOfRange()

@@ -10,12 +10,13 @@ local wf = require 'libs.windfield'
 
 WORLD = wf.newWorld(0, 512, true)
 createCollisionClasses()
+
 MAP = Map:new()
 
 local controller
 
 function love.load()
-    controller = Controller:new(MAP, MAP.player)
+    controller = Controller:new(MAP.player)
 end
 
 function love.update(dt)
@@ -23,9 +24,12 @@ function love.update(dt)
     controller:update(dt)
     MAP:update(dt)
 
-    if MAP.player:getX() > WINDOW_WIDTH/2 then
+    if MAP.player:getX() > WINDOW_WIDTH/2 then 
         Camera.x = MAP.player:getX() - WINDOW_WIDTH/2
     end
+
+    if MAP.player:getX() - Camera.x <= 0 then Camera.x = 0 end -- provisory condition
+
 end
 
 function love.draw()

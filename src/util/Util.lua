@@ -4,13 +4,13 @@ WINDOW_HEIGHT = love.graphics.getHeight()
 TILE_SIZE = 16
 
 function renderLoop(objectList)
-    for i, object in pairs(objectList) do
+    for _, object in pairs(objectList) do
         object:render()
     end
 end
 
 function updateLoop(dt, objectList)
-    for i, object in pairs(objectList) do
+    for _, object in pairs(objectList) do
         object:update(dt)
     end
 end

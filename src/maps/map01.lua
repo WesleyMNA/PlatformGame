@@ -26,9 +26,30 @@ mapData.floors[4] = {
 
 mapData.enemies = {}
 mapData.enemies[1] = {
-    name = 'base',
-    x = 300,
-    y = 200,
+    name = 'shooter',
+    x = 670,
+    y = 100,
     playerX = 150,
     created = false
 }
+-- mapData.enemies[2] = {
+--     name = 'shooter',
+--     x = 400,
+--     y = 100,
+--     playerX = 250,
+--     created = false
+-- }
+-- mapData.enemies[3] = {
+--     name = 'shooter',
+--     x = 550,
+--     y = 100,
+--     playerX = 450,
+--     created = false
+-- }
+-- mapData.enemies[4] = {
+--     name = 'shooter',
+--     x = 600,
+--     y = 100,
+--     playerX = 500,
+--     created = false
+-- }

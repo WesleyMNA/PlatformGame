@@ -1,7 +1,7 @@
 require('src.player.Player')
 require('src.enemy.EnemyGenerator')
 
-require('src.maps.Map01')
+require('src.maps.map01')
 
 Map = {}
 Map.__index = Map
@@ -13,7 +13,7 @@ function Map:new()
         sprite = love.graphics.newImage('assets/sprites/map/map1.png')
     }
 
-    this.player = Player:new(this, 100, 100)
+    this.player = Player:new(100, 100)
     this.enemyGenerator = EnemyGenerator:new(mapData.enemies, this.player)
 
     setmetatable(this, self)
@@ -34,8 +34,8 @@ function Map:update(dt)
 end
 
 function Map:render()
+    love.graphics.setColor(WHITE)
     love.graphics.draw(self.sprite)
-    -- love.graphics.setBackgroundColor(RED)
     self.player:render()
     self.enemyGenerator:render()
 end

@@ -3,12 +3,11 @@ require('src.gui.Button')
 Controller = {}
 Controller.__index = Controller
 
-function Controller:new(map, player)
+function Controller:new(player)
     local this = {
         class = 'Controller',
 
-        player = player,
-        map = map
+        player = player
     }
 
     local buttonY = WINDOW_HEIGHT - 100

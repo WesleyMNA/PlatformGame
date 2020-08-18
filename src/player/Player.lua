@@ -4,11 +4,9 @@ require('src.player.PlayerBullet')
 Player = {}
 Player.__index = Player
 
-function Player:new(map, x, y)
+function Player:new(x, y)
     local this = {
         class = 'Player',
-
-        map = map,
 
         spritesheets = {},
         quads = {},
@@ -33,7 +31,6 @@ function Player:new(map, x, y)
     }
 
     this.collider:setCollisionClass('Player')
-    print(this.collider:getMask())
 
     -- WALK
     this.spritesheets.walk = love.graphics.newImage('assets/sprites/player/walk.png')
@@ -90,6 +87,8 @@ function Player:update(dt)
         self.animations[self.state]:reset()
     end
 
+    if self:getY() >= WINDOW_HEIGHT then self:die() end
+
     self:resetDirection()
     self:resetShoot(dt)
 end
@@ -129,6 +128,10 @@ function Player:move()
     self.collider:setLinearVelocity(self.direction.x, self.direction.y)
 end
 
+function Player:die()
+    self.collider.body:setPosition(100, 100)
+end
+
 function Player:isMoving()
     if self.direction.x ~= 0 then return true end
     return false
@@ -139,7 +142,7 @@ function Player:isJumping()
 end
 
 function Player:isTouchingTheFloor()
-    for _, floor in pairs(self.map.floors) do
+    for _, floor in pairs(MAP.floors) do
         if self.collider:isTouching(floor.body) then return true end
     end
     return false
