@@ -15,6 +15,7 @@ function PlayerBullet:new(x, y, shooter)
 
     this:createCollider(x, y)
     this.collider:setCollisionClass('PlayerBullet')
+    this.collider:setCategory(3)
 
     return this
 end

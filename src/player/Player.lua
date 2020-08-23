@@ -17,7 +17,7 @@ function Player:new(x, y)
         collider = WORLD:newCircleCollider(x, y, 16),
         speed = 300,
         jumpHeight = 200,
-        shootSpeed = 0.5,
+        shootSpeed = 0.1,
 
         direction = {
             x = 0,
@@ -31,6 +31,7 @@ function Player:new(x, y)
     }
 
     this.collider:setCollisionClass('Player')
+    this.collider:setMask(2)
 
     -- WALK
     this.spritesheets.walk = love.graphics.newImage('assets/sprites/player/walk.png')
@@ -89,13 +90,14 @@ function Player:update(dt)
 
     if self:getY() >= WINDOW_HEIGHT then self:die() end
 
+    self:collide()
     self:resetDirection()
     self:resetShoot(dt)
 end
 
 function Player:render()
     renderLoop(self.bullets)
-    love.graphics.setColor(WHITE)
+
     love.graphics.draw(
         self.spritesheets[self.state], self.quads[self.state],
         self:getX(), self:getY(), 0,
@@ -107,11 +109,18 @@ end
 function Player:attack()
     if self:isJumping() then return end
 
-    if self.shootSpeed >= 0.5 then
+    if self.shootSpeed >= 0.1 then
         self.shootSpeed = 0
         local bullet = PlayerBullet:new(self:getX(), self:getY(), self)
         table.insert(self.bullets, bullet)
     end
+end
+
+function Player:collide()
+    -- if self.collider:enter('Enemy') then
+    --     local aux = 700 * self:getScaleX() * -1
+    --     self.collider:applyLinearImpulse(aux, -100)
+    -- end
 end
 
 function Player:resetShoot(dt)
@@ -142,10 +151,7 @@ function Player:isJumping()
 end
 
 function Player:isTouchingTheFloor()
-    for _, floor in pairs(MAP.floors) do
-        if self.collider:isTouching(floor.body) then return true end
-    end
-    return false
+    return self.collider:isTouching(MAP.floor.body)
 end
 
 function Player:getPosition()

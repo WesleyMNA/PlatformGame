@@ -23,32 +23,9 @@ function Base:extend(type)
     return this
 end
 
-scale = 1
-
-function Base:update(dt)
-    if self.bullets then updateLoop(dt, self.bullets) end
-
-    if self:isPlayerTooFurther() then return end
-
-    self:changeDirection()
-
-    if self:isShooter() then
-        self:attack()
-        self:resetShoot(dt)
-    end
-
-    if self:isKnifer() then
-        self:move()
-    end
-
-    self:collide()
-    self:die()
-end
-
 function Base:render()
     if self.bullets then renderLoop(self.bullets) end
 
-    love.graphics.setColor(WHITE)
     love.graphics.draw(
         self.sprite,
         self:getX(), self:getY(), 0,
@@ -64,6 +41,8 @@ function Base:createCollider(x, y)
     self.collider = WORLD:newCircleCollider(x, y, 16)
     self.collider:setMass(10000000000)
     self.collider:setCollisionClass('Enemy')
+    self.collider:setCategory(2)
+    self.collider:setMask(2)
 end
 
 function Base:collide()
@@ -71,9 +50,7 @@ function Base:collide()
 end
 
 function Base:die()
-    if self.health <= 0 then
-        self.enemyGenerator:removeEnemy(self)
-    end
+    self.enemyGenerator:removeEnemy(self)
 end
 
 function Base:changeDirection()
@@ -85,12 +62,8 @@ function Base:changeDirection()
     self.scale.x, self.direction.x = result, result * self.speed
 end
 
-function Base:isShooter()
-    return self.class == 'Shooter'
-end
-
-function Base:isKnifer()
-    return self.class == 'Knifer'
+function Base:isAlive()
+    return self.health > 0
 end
 
 function Base:isShot()
@@ -119,6 +92,6 @@ end
 
 function Base:setSprite(sprite)
     self.sprite = sprite
-    self.width = sprite:getWidth()
     self.height = sprite:getHeight()
+    self.width = self.height
 end

@@ -23,6 +23,24 @@ function Shooter:new(x, y)
     return this
 end
 
+function Shooter:update(dt)
+    if self.bullets then updateLoop(dt, self.bullets) end
+
+    if self:isAlive() then
+        if self:isPlayerTooFurther() then return end
+
+        self:changeDirection()
+
+        self:attack()
+        self:resetShoot(dt)
+
+        self:collide()
+    else
+        self:die()
+        if self:thereAreNoBullets() then self:destroy() end
+    end
+end
+
 function Shooter:attack()
     if self.shootSpeed >= 0.5 then
         self.shootSpeed = 0
@@ -42,7 +60,17 @@ function Shooter:destroyBullet(bullet)
 end
 
 function Shooter:die()
-    if self.health <= 0  then
-        self.enemyGenerator:removeEnemy(self)
-    end
+    local sprite = love.graphics.newImage('assets/sprites/enemy/empty.png')
+    self:setSprite(sprite)
+    self.collider:setCollisionClass('Ignore')
+    self.collider:setCategory(2)
+    self.collider:setMask(3)
+end
+
+function Shooter:destroy()
+    self.enemyGenerator:removeEnemy(self)
+end
+
+function Shooter:thereAreNoBullets()
+    return #self.bullets <= 0
 end

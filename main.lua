@@ -27,15 +27,12 @@ function love.update(dt)
     if MAP.player:getX() > WINDOW_WIDTH/2 then 
         Camera.x = MAP.player:getX() - WINDOW_WIDTH/2
     end
-
-    if MAP.player:getX() - Camera.x <= 0 then Camera.x = 0 end -- provisory condition
-
 end
 
 function love.draw()
     Camera:set()
     MAP:render()
-    WORLD:draw()
+    -- WORLD:draw()
     Camera:unset()
     controller:render()
 end

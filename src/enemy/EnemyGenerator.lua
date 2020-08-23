@@ -4,14 +4,22 @@ require('src.enemy.Shooter')
 EnemyGenerator = {}
 EnemyGenerator.__index = EnemyGenerator
 
-function EnemyGenerator:new(enemyData, player)
+function EnemyGenerator:new(player)
     local this = {
         class = 'EnemyGenerator',
 
-        enemyData = enemyData,
         player = player,
 
         enemiesInScene = {}
+    }
+
+    this.enemies = {
+        shooter = function(x, y)
+            return Shooter:new(x, y)
+        end,
+        knifer = function(x, y)
+            return Knifer:new(x, y)
+        end,
     }
 
     setmetatable(this, self)
@@ -19,18 +27,23 @@ function EnemyGenerator:new(enemyData, player)
 end
 
 function EnemyGenerator:update(dt)
-    for _, enemy in pairs(self.enemyData) do
-        if not enemy.created then
-            -- local test = Knifer:new(enemy.x, enemy.y)
-            local test = Shooter:new(enemy.x, enemy.y)
-            enemy.created = true
-            self:addEnemy(test)
-        end
-    end
     updateLoop(dt, self.enemiesInScene)
+
+    if math.random(100) == 1 then
+        local x = math.random(800)
+        local shooter = Shooter:new(x, 100)
+        self:addEnemy(shooter)
+    end
+
+    if math.random(100) == 1 then
+        local x = math.random(800)
+        local knifer = Knifer:new(x, 100)
+        self:addEnemy(knifer)
+    end
 end
 
 function EnemyGenerator:render()
+    love.graphics.setColor(WHITE)
     renderLoop(self.enemiesInScene)
 end
 

@@ -14,6 +14,7 @@ function EnemyBullet:new(x, y, shooter)
 
     this:createCollider(x, y)
     this.collider:setCollisionClass('EnemyBullet')
+    this.collider:setMask(2)
 
     return this
 end
